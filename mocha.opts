@@ -1,0 +1,10 @@
+--colors
+--bail
+--slow 50
+--timeout 100
+--check-leaks
+--inline-diffs
+--exit
+--throw-deprecation
+--use_strict
+--recursive
