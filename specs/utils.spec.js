@@ -1,16 +1,10 @@
 const { describe, it } = require('mocha');
 const { expect } = require('chai');
+const endpoint = require('./constants').endpoint;
 const url = require('../libs/utils/serverurl').url;
 
 describe('utils', () => {
   describe('url', () => {
-    const endpoint = {
-      proto: 'http',
-      host: '127.0.0.1',
-      port: 888,
-      basePath: '/api/v1',
-    };
-
     it('should construct URL with PORT', () => {
       const expectedURL = `${endpoint.proto}://${endpoint.host}:${endpoint.port}${endpoint.basePath}`;
       const constructedURL = url(endpoint);

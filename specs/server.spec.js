@@ -1,15 +1,10 @@
 const {describe, it} = require('mocha');
 const {expect} = require('chai');
 const PowerDNS = require('../main');
+const endpoint = require('./constants').endpoint;
 
 const config = {
-  // url: 'http://192.168.0.2:8888/api/v1/servers',
-  endpoint: {
-    proto: 'http',
-    host: '192.168.0.2',
-    port: 8888,
-    basePath: '/api/v1'
-  },
+  endpoint,
   api: {
     headers: {
       'X-API-Key': 'pdnsapikey'

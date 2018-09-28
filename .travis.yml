@@ -1,0 +1,32 @@
+dist: trusty
+sudo: required
+language: node_js
+node_js:
+  - "10.11.0"
+addons:
+  postgresql: "10"
+  apt:
+    packages:
+      - postgresql-10
+      - postgresql-client-10
+env:
+  global:
+  - PGPORT=5433
+services:
+  - postgresql
+before_install:
+  - npm i -g npm@latest
+  - sudo sed -i -e '/local.*peer/s/postgres/all/' -e 's/peer\|md5/trust/g' /etc/postgresql/*/main/pg_hba.conf
+  - sudo service postgresql restart
+  - sleep 1
+  - psql -c 'create database pdns;' -U postgres
+  - psql -d pdns -a -f ./travis/pgsql/schema.sql
+  - sudo chmod +x ./travis/scripts/install-pdns.sh
+  - sudo /bin/bash ./travis/scripts/install-pdns.sh
+  - sudo chmod +x ./travis/scripts/check-pdns.sh
+  - sudo /bin/bash ./travis/scripts/check-pdns.sh
+install:
+  - npm install
+  - npm install -g codecov
+script:
+  - npm run codecov-report

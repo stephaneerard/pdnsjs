@@ -1,0 +1,66 @@
+version: "2"
+checks:
+  argument-count:
+    enabled: true
+    config:
+      threshold: 2
+  complex-logic:
+    enabled: true
+    config:
+      threshold: 4
+  file-lines:
+    enabled: true
+    config:
+      threshold: 250
+  method-complexity:
+    enabled: true
+    config:
+      threshold: 5
+  method-count:
+    enabled: true
+    config:
+      threshold: 20
+  method-lines:
+    enabled: true
+    config:
+      threshold: 25
+  nested-control-flow:
+    enabled: true
+    config:
+      threshold: 4
+  return-statements:
+    enabled: true
+    config:
+      threshold: 4
+  similar-code:
+    enabled: true
+    config:
+      threshold: 20 # language-specific defaults. an override will affect all languages.
+  identical-code:
+    enabled: true
+    config:
+      threshold: 20 # language-specific defaults. an override will affect all languages.
+plugins:
+  nodesecurity:
+    enabled: true
+  eslint:
+    enabled: false
+    channel: "eslint-4"
+    config: .eslintrc.js
+    checks:
+      complexity:
+        enabled: true
+  fixme:
+    enabled: true
+  markdownlint:
+    enabled: true
+  shellcheck:
+    enabled: true
+  duplication:
+    enabled: true
+    config:
+      languages:
+        javascript:
+          mass_threshold: 45
+exclude_patterns:
+  - "**/node_modules/"
