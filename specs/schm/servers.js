@@ -1,5 +1,6 @@
 const schema = require('schm');
 const validate = require('schm');
+const { str } = require('./lib');
 
 const config_url_regex = /^\/api\/v\d{1}\/servers\/localhost\/config\{\/config_setting\}$/u;
 const daemon_type_regex = /^(authoritative|recursor)$/u;
@@ -14,42 +15,42 @@ const serversSchema = schema({
     type: String,
     required: true,
     validate: function (v) {
-      return (v.length > 0) && config_url_regex.test(v);
+      return str.validate(v, config_url_regex);
     },
   },
   daemon_type: {
     type: String,
     required: true,
     validate: function (v) {
-      return (v.length > 0) && daemon_type_regex.test(v);
+      return str.validate(v, daemon_type_regex);
     },
   },
   id: {
     type: String,
     required: true,
     validate: function (v) {
-      return (v.length > 0) && id_regex.test(v);
+      return str.validate(v, id_regex);
     },
   },
   type: {
     type: String,
     required: true,
     validate: function (v) {
-      return (v.length > 0) && type_regex.test(v);
+      return str.validate(v, type_regex);
     },
   },
   url: {
     type: String,
     required: true,
     validate: function (v) {
-      return (v.length > 0) && url_regex.test(v);
+      return str.validate(v, url_regex);
     },
   },
   version: {
     type: String,
     required: true,
     validate: function (v) {
-      const isStringOK = (v.length > 0) && version_regex.test(v);
+      const isStringOK = str.validate(v, version_regex);
       
       if (isStringOK === false) { return false; }
       
@@ -68,7 +69,7 @@ const serversSchema = schema({
     type: String,
     required: true,
     validate: function (v) {
-      return (v.length > 0) && zones_url_regex.test(v);
+      return str.validate(v, zones_url_regex);
     },
   },
 });
