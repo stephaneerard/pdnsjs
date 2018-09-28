@@ -6,9 +6,9 @@ const config = {
   // url: 'http://192.168.0.2:8888/api/v1/servers',
   endpoint: {
     proto: 'http',
-    server: '192.168.0.2',
+    host: '192.168.0.2',
     port: 8888,
-    path: '/api/v1'
+    basePath: '/api/v1'
   },
   api: {
     headers: {
@@ -28,7 +28,7 @@ describe('PowerDNS Server API', () => {
     pdns = null
   })
 
-  it('get a list of ...', async () => {
+  it('get a list of servers', async () => {
     const asInSpec = [
       'type',
       'id',
