@@ -1,5 +1,7 @@
 # libpdns
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/Dmitry-N-Medvedev/pdnsjs.svg)](https://greenkeeper.io/)
+
 Manipulate dns records in powerDNS via its internal API server.
 
 ## NB
