@@ -1,18 +1,24 @@
-const Servers = require('./libs/servers');
+const servers = require('./libs/servers').servers;
+const serverHandler = require('./libs/proxies/server');
 
-let servers = null;
+const PowerDNS = Object.create(null);
 
-module.exports = class PowerDNS {
-  constructor(config) {
-    this.config = Object.assign(Object.create(null), config);
+PowerDNS.configure = function(config) {
+  PowerDNS.config = config;
+  PowerDNS.server.config = config;
+};
 
-    if (servers === null) {
-      servers = new Servers(this.config);
-    }
-  }
+Reflect.defineProperty(PowerDNS, 'servers', {
+  get: function () {
+    return servers(PowerDNS.config);
+  },
+  enumerable: true,
+});
 
-  get servers() {
-    return servers;
-  };
-}
+Reflect.defineProperty(PowerDNS, 'server', {
+  value: serverHandler,
+  enumerable: true,
+  writable: false,
+});
 
+module.exports = PowerDNS;

@@ -28,7 +28,7 @@
   "homepage": "https://github.com/Dmitry-N-Medvedev/pdnsjs#readme",
   "scripts": {
     "upgrade-deps": "ncu -n -t -a -u -l warn",
-    "test": "NODE_PATH=./ cross-env ./node_modules/.bin/nyc ./node_modules/.bin/mocha --opts ./mocha.opts ./**/*.spec.js",
+    "test": "NODE_PATH=./ NODE_DEBUG=PowerDNS cross-env ./node_modules/.bin/mocha --opts ./mocha.opts ./**/*.spec.js",
     "codecov-report": "NODE_PATH=./ ./node_modules/.bin/nyc ./node_modules/.bin/mocha --opts ./mocha.opts ./**/*.spec.js && ./node_modules/.bin/nyc --reporter=lcov --reporter=text-lcov report > ./codecov-report.lcov | ./node_modules/.bin/codecov"
   },
   "keywords": [

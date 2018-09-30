@@ -1,5 +1,13 @@
+const util = require('util');
+
 module.exports.str = {
   validate: function (v, re) {
-    return (v.length > 0) && re.test(v);
+    let result = false;
+
+    try {
+      result = re.test(v);
+    } catch (e) {}
+
+    return result;
   },
 };

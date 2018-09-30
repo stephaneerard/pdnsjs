@@ -1,6 +1,6 @@
 --colors
 --bail
---slow 50
+--slow 60
 --timeout 100
 --check-leaks
 --inline-diffs
