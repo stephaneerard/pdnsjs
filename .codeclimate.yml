@@ -44,7 +44,7 @@ plugins:
   nodesecurity:
     enabled: true
   eslint:
-    enabled: false
+    enabled: true
     channel: "eslint-4"
     config: .eslintrc.js
     checks:
@@ -64,3 +64,4 @@ plugins:
           mass_threshold: 45
 exclude_patterns:
   - "**/node_modules/"
+  - "**/*.spec.js"
