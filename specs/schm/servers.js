@@ -9,42 +9,22 @@ const urlRegex = /^\/api\/v\d{1}\/servers\/localhost$/u;
 const versionRegex = /^(?<major>\d).(?<minor>\d).(?<patch>\d)$/u;
 const zonesUrlRegex = /^\/api\/v\d{1}\/servers\/localhost\/zones\{\/zone\}$/u;
 
+const stringValidator = function define(regEx) {
+  return {
+    type: String,
+    required: true,
+    validate(v) {
+      return str.validate(v, regEx);
+    },
+  };
+};
+
 const serversSchema = schema({
-  config_url: {
-    type: String,
-    required: true,
-    validate(v) {
-      return str.validate(v, configUrlRegex);
-    },
-  },
-  daemon_type: {
-    type: String,
-    required: true,
-    validate(v) {
-      return str.validate(v, daemonTypeRegex);
-    },
-  },
-  id: {
-    type: String,
-    required: true,
-    validate(v) {
-      return str.validate(v, idRegex);
-    },
-  },
-  type: {
-    type: String,
-    required: true,
-    validate(v) {
-      return str.validate(v, typeRegex);
-    },
-  },
-  url: {
-    type: String,
-    required: true,
-    validate(v) {
-      return str.validate(v, urlRegex);
-    },
-  },
+  config_url: stringValidator(configUrlRegex),
+  daemon_type: stringValidator(daemonTypeRegex),
+  id: stringValidator(idRegex),
+  type: stringValidator(typeRegex),
+  url: stringValidator(urlRegex),
   version: {
     type: String,
     required: true,
@@ -64,13 +44,7 @@ const serversSchema = schema({
       );
     },
   },
-  zones_url: {
-    type: String,
-    required: true,
-    validate(v) {
-      return str.validate(v, zonesUrlRegex);
-    },
-  },
+  zones_url: stringValidator(zonesUrlRegex),
 });
 
 module.exports.check = function check(v) {
