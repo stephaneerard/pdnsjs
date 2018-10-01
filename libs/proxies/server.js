@@ -1,12 +1,9 @@
 const ServerObject = require('../api/server');
+const { defineConfigProperty } = require('../utils/definePropertyConfig');
 
 const Server = Object.create(null);
 
-Reflect.defineProperty(Server, 'config', {
-  value: '',
-  enumerable: true,
-  writable: true,
-});
+defineConfigProperty(Server);
 
 const serverHandler = {
   async get(target, key) {

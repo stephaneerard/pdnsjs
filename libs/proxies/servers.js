@@ -1,10 +1,7 @@
 const Servers = Object.create(null);
+const { defineConfigProperty } = require('../utils/definePropertyConfig');
 
-Reflect.defineProperty(Servers, 'config', {
-  value: '',
-  enumerable: true,
-  writable: true,
-});
+defineConfigProperty(Servers);
 
 const serversHandler = {
   async get(target) {
