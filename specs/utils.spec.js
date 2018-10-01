@@ -1,7 +1,9 @@
+/* eslint-disable no-unused-expressions */
+
 const { describe, it } = require('mocha');
 const { expect } = require('chai');
-const endpoint = require('./constants').endpoint;
-const url = require('../libs/utils/serverurl').url;
+const { endpoint } = require('./constants');
+const { url } = require('../libs/utils/serverurl');
 
 describe('utils', () => {
   describe('url', () => {

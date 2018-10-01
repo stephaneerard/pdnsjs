@@ -1,3 +1,6 @@
+/* eslint-disable no-unused-expressions */
+
+
 const { describe, it } = require('mocha');
 const { expect } = require('chai');
 const { str } = require('./schm/lib');
@@ -51,6 +54,5 @@ describe('schm', () => {
 
       expect(validationResult).to.be.false;
     });
-
   });
 });

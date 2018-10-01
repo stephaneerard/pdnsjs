@@ -1,15 +1,18 @@
-const servers = require('../servers').servers;
+const Servers = Object.create(null);
+
+Reflect.defineProperty(Servers, 'config', {
+  value: '',
+  enumerable: true,
+  writable: true,
+});
 
 const serversHandler = {
-  get: function(target, key) {
-    console.log('target, key:', target, key);
+  async get(target) {
+    const response = await target.config.g('/servers');
+    const serverId = JSON.parse(response.body).map(server => server.id);
 
-    switch(key) {
-      case 'servers': {
-        return servers(target.config);
-      }
-    }
+    return serverId;
   },
 };
 
-module.exports.handler = new Proxy(Object.create(null), serversHandler);
+module.exports = new Proxy(Servers, serversHandler);

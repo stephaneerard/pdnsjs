@@ -1,5 +1,3 @@
-const got = require('got');
-const url = require('../utils/serverurl').url;
 const ServerObject = require('../api/server');
 
 const Server = Object.create(null);
@@ -11,15 +9,17 @@ Reflect.defineProperty(Server, 'config', {
 });
 
 const serverHandler = {
-  get: async function(target, key) {
-    const result = await got(`${url(target.config.endpoint)}/servers/${key}`, target.config.api);
+  async get(target, key) {
+    const result = await target.config.g(`/servers/${key}`);
     const serverDescription = JSON.parse(result.body);
+
     return new ServerObject({
       description: serverDescription,
       config: target.config,
     });
   },
-  set: function(target, key, value) {
+  set() {
+    // eslint-disable-next-line
     return Reflect.set(...arguments);
   },
 };

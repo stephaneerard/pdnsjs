@@ -1,5 +1,5 @@
-const got = require('got');
-const url = require('../utils/serverurl').url;
+// const got = require('got');
+// const { url } = require('../utils/serverurl');
 
 class ServerObject {
   constructor({ description, config }) {
@@ -8,25 +8,17 @@ class ServerObject {
       enumerable: false,
       writable: false,
     });
-    Reflect.defineProperty(this, 'config', {
-      value: Object.assign(Object.create(null), config),
-      enumerable: false,
-      writable: false,
-    });
-    this.g = got.extend({
-      baseUrl: url(this.config.endpoint),
-      headers: this.config.api.headers,
-    });
+    this.g = config.g;
   }
 
   get zones() {
-    return new Promise(async (resolve, reject) => {
-      const response = await this.g(`/servers/${this.description.id}/zones`, this.config.api);
+    return new Promise(async (resolve) => {
+      const response = await this.g(`/servers/${this.description.id}/zones`);
       resolve(JSON.parse(response.body));
     });
   }
 
-  async create_zone(zoneConfig) {
+  async createZone(zoneConfig) {
     const postURL = `/servers/${this.description.id}/zones`;
     const options = Object.assign(
       Object.create(null),
@@ -40,15 +32,13 @@ class ServerObject {
     return JSON.parse(response.body);
   }
 
-  async delete_zone(id) {
+  async deleteZone(id) {
     const deleteURL = `/servers/${this.description.id}/zones/${id}`;
     const options = Object.create(null);
     const response = await this.g.delete(deleteURL, options);
 
     return response.statusCode === 204;
   }
-
 }
-
 
 module.exports = ServerObject;
