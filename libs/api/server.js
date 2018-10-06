@@ -1,20 +1,39 @@
-// const got = require('got');
-// const { url } = require('../utils/serverurl');
+const ZoneObject = require('./zone');
 
 class ServerObject {
   constructor({ description, config }) {
     Reflect.defineProperty(this, 'description', {
-      value: Object.assign(Object.create(null), description),
+      value: Object.freeze(Object.assign(Object.create(null), description)),
+      enumerable: true,
+      writable: false,
+    });
+
+    Reflect.defineProperty(this, 'g', {
+      value: config.g,
       enumerable: false,
       writable: false,
     });
-    this.g = config.g;
   }
 
   get zones() {
     return new Promise(async (resolve) => {
       const response = await this.g(`/servers/${this.description.id}/zones`);
-      resolve(JSON.parse(response.body));
+      const zones = JSON.parse(response.body);
+      resolve(
+        zones.map(
+          ({
+            // eslint-disable-next-line camelcase
+            dnssec, id, kind, last_check, masters, name, serial,
+          }) => Object.freeze(
+            Object.assign(
+              Object.create(null),
+              {
+                dnssec, id, kind, last_check, masters, name, serial,
+              },
+            ),
+          ),
+        ),
+      );
     });
   }
 
@@ -27,9 +46,31 @@ class ServerObject {
         json: false,
       },
     );
-    const response = await this.g(postURL, options);
+    const response = await this.g.post(postURL, options);
+    const {
+      api_rectify, // eslint-disable-line camelcase
+      dnssec,
+      id,
+      kind,
+      masters,
+      name,
+      rrsets,
+      serial,
+    } = JSON.parse(response.body);
 
-    return JSON.parse(response.body);
+    return new ZoneObject({
+      description: {
+        api_rectify, // eslint-disable-line camelcase
+        dnssec,
+        id,
+        kind,
+        masters,
+        name,
+        rrsets,
+        serial,
+      },
+      config: { g: this.g },
+    });
   }
 
   async deleteZone(id) {

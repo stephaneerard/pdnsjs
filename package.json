@@ -2,7 +2,7 @@
   "name": "pdnsjs",
   "version": "1.0.0",
   "description": "powerDNS API",
-  "main": "main.js",
+  "main": "pdns.js",
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com/Dmitry-N-Medvedev/pdnsjs.git"
@@ -11,18 +11,20 @@
   "license": "MIT",
   "private": false,
   "dependencies": {
+    "chai": "^4.2.0",
+    "dotenv": "^6.0.0",
     "got": "^9.2.2",
-    "npm-check-updates": "^3.0.0-alpha2",
-    "schm": "^0.4.1"
+    "lodash": "^4.17.11",
+    "mocha": "^5.2.0",
+    "schm": "^0.4.1",
+    "sinon": "^6.3.5"
   },
   "devDependencies": {
-    "chai": "^4.2.0",
     "codecov": "^3.1.0",
     "cross-env": "^5.2.0",
     "eslint": "^5.6.1",
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-plugin-import": "^2.14.0",
-    "mocha": "^5.2.0",
     "nyc": "^13.0.1"
   },
   "bugs": {
@@ -30,7 +32,6 @@
   },
   "homepage": "https://github.com/Dmitry-N-Medvedev/pdnsjs#readme",
   "scripts": {
-    "upgrade-deps": "ncu -n -t -a -u -l warn",
     "lint": "./node_modules/.bin/eslint --env node --max-warnings 1 --fix './**/*.js'",
     "test": "NODE_PATH=./ NODE_DEBUG=PowerDNS cross-env npm run lint && ./node_modules/.bin/mocha --opts ./mocha.opts ./**/*.spec.js",
     "codecov-report": "NODE_PATH=./ ./node_modules/.bin/nyc ./node_modules/.bin/mocha --opts ./mocha.opts ./**/*.spec.js && ./node_modules/.bin/nyc --reporter=lcov --reporter=text-lcov report > ./codecov-report.lcov | ./node_modules/.bin/codecov"
