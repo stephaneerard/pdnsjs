@@ -1,7 +1,7 @@
 --colors
 --bail
---slow 60
---timeout 100
+--slow 500
+--timeout 1000
 --check-leaks
 --inline-diffs
 --exit

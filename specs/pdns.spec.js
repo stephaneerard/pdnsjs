@@ -54,6 +54,6 @@ describe('PowerDNS', () => {
 
       clearTimeout(timeout);
       done();
-    }, 10);
+    }, 100);
   });
 });
