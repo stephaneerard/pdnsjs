@@ -1,0 +1,12 @@
+--globals spyObject,defaultServerId,SPY,PDNS
+--colors
+--bail
+--slow 100
+--timeout 500
+--check-leaks --globals spyObject,defaultServerId,SPY,PDNS
+--inline-diffs
+--exit
+--throw-deprecation
+--use_strict
+--recursive
+--file specs/helpers/helper.js
