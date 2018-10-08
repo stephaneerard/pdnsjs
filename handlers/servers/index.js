@@ -5,7 +5,7 @@ module.exports = class ServersHandler {
  * Constructor
  * @param {Function} response - The callback to be called with results.
  */
-constructor(response) {
+  constructor(response) {
     Reflect.defineProperty(this, 'response', {
       value: response,
       enumerable: false,
