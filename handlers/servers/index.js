@@ -1,12 +1,11 @@
 const { REQ_SERVERS } = require('../../constants');
 
 module.exports = class ServersHandler {
-  /**
-   * Constructor
-   * @param {Function} response - The callback to be called with results.
-   */
-
-  constructor(response) {
+/**
+ * Constructor
+ * @param {Function} response - The callback to be called with results.
+ */
+constructor(response) {
     Reflect.defineProperty(this, 'response', {
       value: response,
       enumerable: false,

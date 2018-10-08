@@ -1,0 +1,166 @@
+/* eslint-disable no-unused-expressions */
+
+const { describe, before, it } = require('mocha');
+const { expect } = require('chai');
+const PowerDNS = require('../main');
+const { endpoint } = require('./constants');
+const { apikey } = require('./constants');
+// const validateResponse = require('./schm/servers').check
+
+describe('PowerDNS Server API', () => {
+  const defaultServerName = 'localhost';
+  const serverConfig = {
+    endpoint,
+    api: {
+      headers: { 'X-API-Key': apikey },
+    },
+  };
+  const serverExpectedFields = ['id', 'daemon_type', 'version'];
+  const zoneExpectedFields = [
+    'api_rectify',
+    'dnssec',
+    'id',
+    'kind',
+    'masters',
+    'name',
+    'rrsets',
+    'serial',
+  ];
+  const configureZone = function configureZone(zoneName) {
+    return {
+      name: zoneName,
+      kind: 'NATIVE',
+      api_rectify: false,
+      masters: [],
+      nameservers: [
+        'ns1.dmx.',
+        'ns2.dmx.',
+      ],
+    };
+  };
+
+  before(async () => {
+    PowerDNS.configure(serverConfig);
+  });
+
+  it('returns a list of servers', async () => {
+    const servers = await PowerDNS.servers;
+
+    expect(servers).to.exist;
+    expect(Array.isArray(servers)).to.be.true;
+    expect(servers).to.not.be.empty;
+
+    servers.forEach((server) => {
+      expect(server).to.be.an('object').that.has.all.keys(serverExpectedFields);
+      expect(server).to.be.frozen;
+
+      Object.keys(server).forEach((propertyName) => {
+        expect(server).to.have.ownPropertyDescriptor(
+          propertyName, {
+            configurable: false,
+            enumerable: true,
+            writable: false,
+            value: server[propertyName],
+          },
+        );
+      });
+    });
+  });
+
+  it(`gets the "${defaultServerName}" server`, async () => {
+    const localhost = await PowerDNS.server(defaultServerName);
+
+    expect(localhost).to.exist;
+    expect(Object.keys(localhost).length).to.equal(1);
+    expect(localhost).to.have.own.property('description');
+
+    expect(localhost.description).to.be.frozen;
+    expect(
+      Object.keys(localhost.description).length,
+    ).to.equal(serverExpectedFields.length);
+
+    Object.keys(localhost.description).forEach((propertyName) => {
+      expect(serverExpectedFields).to.include(propertyName);
+      expect(localhost.description).to.have.ownPropertyDescriptor(
+        propertyName, {
+          configurable: false,
+          enumerable: true,
+          writable: false,
+          value: localhost.description[propertyName],
+        },
+      );
+    });
+  });
+
+  it(`gets zones list of "${defaultServerName}"`, async () => {
+    const localhost = await PowerDNS.server(defaultServerName);
+    const zones = await localhost.zones;
+
+    expect(zones).to.exist;
+    expect(Array.isArray(zones)).to.be.true;
+  });
+
+  it(`creates a root zone in "${defaultServerName}"`, async () => {
+    const zoneName = 'dmx.';
+    const localhost = await PowerDNS.server(defaultServerName);
+    const zone = await localhost.createZone(configureZone(zoneName));
+
+    expect(zone).to.exist;
+    expect(zone).to.not.be.empty;
+    expect(zone.description).to.be.frozen;
+    expect(zone.description.name).to.equal(zoneName);
+    expect(zone.description).to.be.an('object').that.has.all.deep.keys(
+      zoneExpectedFields,
+    );
+
+    const deleteResult = await localhost.deleteZone(zone.description.id);
+
+    expect(deleteResult).to.be.true;
+  });
+
+  it(`gets rrsets in ${defaultServerName}`, async () => {
+    const soaRegEx = /^(?<soa>\S+\.)\s(?<hostmaster>\S+\.)\s(?<A>\d+)\s(?<B>\d+)\s(?<C>\d+)\s(?<D>\d+)\s(?<E>\d+)$/gmus;
+    const nsRegEx = /^(?<NS>.)+\.$/gmus;
+    const zoneName = 'dmx.';
+    const localhost = await PowerDNS.server(defaultServerName);
+    const zone = await localhost.createZone(configureZone(zoneName));
+
+    expect(zone).to.exist;
+    expect(zone).to.not.be.empty;
+
+    const rrsets = await zone.rrsets;
+
+    rrsets.forEach((rrset) => {
+      rrset.records.forEach((record) => {
+        expect(record).to.be.an('object').that.has.all.deep.keys(
+          [
+            'content',
+            'disabled',
+          ],
+        );
+
+        switch (rrset.records.type) {
+          case 'SOA': {
+            expect(record.content).to.match(soaRegEx);
+            break;
+          }
+          case 'NS': {
+            expect(record.content).to.match(nsRegEx);
+            break;
+          }
+          default: {
+            break;
+          }
+        }
+      });
+    });
+
+    const deleteResult = await localhost.deleteZone(zone.description.id);
+
+    expect(deleteResult).to.be.true;
+  });
+
+  it.only(`creates a host in a ${defaultServerName}`, async () => {
+
+  });
+});
