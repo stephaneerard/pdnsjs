@@ -1,6 +1,10 @@
 const { REQ_SERVERS } = require('../../constants');
 
 module.exports = class ServersHandler {
+/**
+ * Constructor
+ * @param {Function} response - The callback to be called with results.
+ */
   constructor(response) {
     Reflect.defineProperty(this, 'response', {
       value: response,
@@ -33,11 +37,9 @@ module.exports = class ServersHandler {
     const result = JSON.parse(response.body);
 
     // eslint-disable-next-line camelcase
-    const servers = result.map(({ id, daemon_type, version }) => Object.freeze(
-      Object.assign(
-        Object.create(null),
-        { id, daemon_type, version },
-      ),
+    const servers = result.map(({ id, daemon_type, version }) => Object.assign(
+      Object.create(null),
+      { id, daemon_type, version },
     ));
 
     this.response(servers);

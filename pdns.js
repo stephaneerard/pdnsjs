@@ -45,6 +45,7 @@ class PowerDNS {
       */
       handler.G = this.g;
       handler.tokens.forEach((token) => {
+        // TODO: can we just merge into key even if it does not exist?
         const handlersForToken = this.handlerResolverTable.get(token) || [];
         const handlerAlreadyExists = handlersForToken.some(
           existingHandler => existingHandler === handler,
@@ -62,6 +63,7 @@ class PowerDNS {
 
   async request(command) {
     this.handlerResolverTable.get(command.t).forEach(async (handler) => {
+      // TODO use RegEx!
       handler.handle(command);
     });
   }
