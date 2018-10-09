@@ -4,25 +4,16 @@ const {
   REQ_DELETE_ZONE,
 } = require('../../constants');
 const { MODIFIED_OK } = require('../../constants/codes');
-const { createHandlerProperties } = require('../../libs/utils/props');
+const { BasehandlerClass } = require('../../libs/classes/BaseHandlerClass');
 const { createOptions } = require('../../libs/utils/options');
 const { UnknownCommandError } = require('../../errors/UnknownCommandError');
 
-module.exports = class ZonesHandler {
+module.exports = class ZonesHandler extends BasehandlerClass {
   constructor(response) {
-    createHandlerProperties({
-      instance: this,
+    super({
       response,
       tokens: [REQ_ZONES, REQ_CREATE_ZONE, REQ_DELETE_ZONE],
     });
-  }
-
-  set G(g) {
-    this.g = g;
-  }
-
-  get tokens() {
-    return this.TOKENS;
   }
 
   async createZone(command) {

@@ -1,25 +1,12 @@
 const { REQ_SERVERS } = require('../../constants');
-const { createHandlerProperties } = require('../../libs/utils/props');
+const { BasehandlerClass } = require('../../libs/classes/BaseHandlerClass');
 
-module.exports = class ServersHandler {
-/**
- * Constructor
- * @param {Function} response - The callback to be called with results.
- */
+module.exports = class ServersHandler extends BasehandlerClass {
   constructor(response) {
-    createHandlerProperties({
-      instance: this,
+    super({
       response,
       tokens: [REQ_SERVERS],
     });
-  }
-
-  set G(g) {
-    this.g = g;
-  }
-
-  get tokens() {
-    return this.TOKENS;
   }
 
   async handle() {

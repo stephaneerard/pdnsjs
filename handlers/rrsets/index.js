@@ -1,28 +1,15 @@
 const { REQ_CREATE_HOST } = require('../../constants');
 const { MODIFIED_OK } = require('../../constants/codes');
-const { createHandlerProperties } = require('../../libs/utils/props');
+const { BasehandlerClass } = require('../../libs/classes/BaseHandlerClass');
 const { createOptions } = require('../../libs/utils/options');
 const { UnknownCommandError } = require('../../errors/UnknownCommandError');
 
-module.exports = class RSSetsHandler {
-  /**
-   * Constructor
-   * @param {Function} response - The callback to be called with results.
-   */
+module.exports = class RSSetsHandler extends BasehandlerClass {
   constructor(response) {
-    createHandlerProperties({
-      instance: this,
+    super({
       response,
       tokens: [REQ_CREATE_HOST],
     });
-  }
-
-  set G(g) {
-    this.g = g;
-  }
-
-  get tokens() {
-    return this.TOKENS;
   }
 
   async createHost(command) {
