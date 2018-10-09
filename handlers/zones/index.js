@@ -6,6 +6,7 @@ const {
 const { MODIFIED_OK } = require('../../constants/codes');
 const { createHandlerProperties } = require('../../libs/utils/props');
 const { createOptions } = require('../../libs/utils/options');
+const { UnknownCommandError } = require('../../errors/UnknownCommandError');
 
 module.exports = class ZonesHandler {
   constructor(response) {
@@ -78,8 +79,10 @@ module.exports = class ZonesHandler {
   }
 
   async deleteZone(command) {
-    const options = Object.create(null);
-    const response = await this.g.delete(`/servers/${command.i}/zones/${command.z}`, options);
+    const response = await this.g.delete(
+      `/servers/${command.i}/zones/${command.z}`,
+      Object.create(null),
+    );
 
     this.response({ result: response.statusCode === MODIFIED_OK });
   }
@@ -99,7 +102,7 @@ module.exports = class ZonesHandler {
         break;
       }
       default: {
-        throw new EvalError('unknown command:', JSON.stringify(command));
+        throw new UnknownCommandError(JSON.stringify(command));
       }
     }
   }

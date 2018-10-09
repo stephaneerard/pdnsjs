@@ -2,6 +2,7 @@ const { REQ_CREATE_HOST } = require('../../constants');
 const { MODIFIED_OK } = require('../../constants/codes');
 const { createHandlerProperties } = require('../../libs/utils/props');
 const { createOptions } = require('../../libs/utils/options');
+const { UnknownCommandError } = require('../../errors/UnknownCommandError');
 
 module.exports = class RSSetsHandler {
   /**
@@ -40,7 +41,7 @@ module.exports = class RSSetsHandler {
         break;
       }
       default: {
-        throw new EvalError('unknown command:', JSON.stringify(command));
+        throw new UnknownCommandError(JSON.stringify(command));
       }
     }
   }
