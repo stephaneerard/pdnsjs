@@ -17,4 +17,4 @@ module.exports.REQ_DELETE_ZONE = 'REQ:DELETE_ZONE';
 /**
  * Request for creating a host.
  */
-module.exports.REQ_CREATE_HOST = 'REQ:CREATE_HOST';
+module.exports.REQ_CREATE_DOMAIN = 'REQ:CREATE_DOMAIN';

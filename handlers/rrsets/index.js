@@ -1,4 +1,4 @@
-const { REQ_CREATE_HOST } = require('../../constants');
+const { REQ_CREATE_DOMAIN } = require('../../constants');
 const { MODIFIED_OK } = require('../../constants/codes');
 const { BasehandlerClass } = require('../../libs/classes/BaseHandlerClass');
 const { createOptions } = require('../../libs/utils/options');
@@ -8,7 +8,7 @@ module.exports = class RSSetsHandler extends BasehandlerClass {
   constructor(response) {
     super({
       response,
-      tokens: [REQ_CREATE_HOST],
+      tokens: [REQ_CREATE_DOMAIN],
     });
   }
 
@@ -23,7 +23,7 @@ module.exports = class RSSetsHandler extends BasehandlerClass {
 
   async handle(command) {
     switch (command.t) {
-      case REQ_CREATE_HOST: {
+      case REQ_CREATE_DOMAIN: {
         this.createHost(command);
         break;
       }

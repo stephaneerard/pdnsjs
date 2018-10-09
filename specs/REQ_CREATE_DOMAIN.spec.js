@@ -6,7 +6,7 @@ const {
 } = require('mocha');
 const { expect } = require('chai');
 const {
-  REQ_CREATE_HOST,
+  REQ_CREATE_DOMAIN,
   REQ_CREATE_ZONE,
   REQ_DELETE_ZONE,
 } = require('../constants');
@@ -44,7 +44,7 @@ describe('PowerDNS', () => {
 
   const createHostCommand = Object.assign(
     Object.create(null),
-    getCommand(REQ_CREATE_HOST),
+    getCommand(REQ_CREATE_DOMAIN),
     {
       i: global.defaultServerId,
       z: null,
