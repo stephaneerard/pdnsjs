@@ -1,4 +1,5 @@
 const { REQ_SERVERS } = require('../../constants');
+const { createHandlerProperties } = require('../../libs/utils/props');
 
 module.exports = class ServersHandler {
 /**
@@ -6,21 +7,10 @@ module.exports = class ServersHandler {
  * @param {Function} response - The callback to be called with results.
  */
   constructor(response) {
-    Reflect.defineProperty(this, 'response', {
-      value: response,
-      enumerable: false,
-      writable: false,
-    });
-
-    Reflect.defineProperty(this, 'g', {
-      enumerable: false,
-      writable: true,
-    });
-
-    Reflect.defineProperty(this, 'TOKENS', {
-      value: [REQ_SERVERS],
-      enumerable: false,
-      writable: false,
+    createHandlerProperties({
+      instance: this,
+      response,
+      tokens: [REQ_SERVERS],
     });
   }
 

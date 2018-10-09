@@ -1,5 +1,6 @@
 const { REQ_CREATE_HOST } = require('../../constants');
 const { MODIFIED_OK } = require('../../constants/codes');
+const { createHandlerProperties } = require('../../libs/utils/props');
 
 module.exports = class RSSetsHandler {
   /**
@@ -7,21 +8,10 @@ module.exports = class RSSetsHandler {
    * @param {Function} response - The callback to be called with results.
    */
   constructor(response) {
-    Reflect.defineProperty(this, 'response', {
-      value: response,
-      enumerable: false,
-      writable: false,
-    });
-
-    Reflect.defineProperty(this, 'g', {
-      enumerable: false,
-      writable: true,
-    });
-
-    Reflect.defineProperty(this, 'TOKENS', {
-      value: [REQ_CREATE_HOST],
-      enumerable: false,
-      writable: false,
+    createHandlerProperties({
+      instance: this,
+      response,
+      tokens: [REQ_CREATE_HOST],
     });
   }
 

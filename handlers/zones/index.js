@@ -4,24 +4,14 @@ const {
   REQ_DELETE_ZONE,
 } = require('../../constants');
 const { MODIFIED_OK } = require('../../constants/codes');
+const { createHandlerProperties } = require('../../libs/utils/props');
 
 module.exports = class ZonesHandler {
   constructor(response) {
-    Reflect.defineProperty(this, 'response', {
-      value: response,
-      enumerable: false,
-      writable: false,
-    });
-
-    Reflect.defineProperty(this, 'g', {
-      enumerable: false,
-      writable: true,
-    });
-
-    Reflect.defineProperty(this, 'TOKENS', {
-      value: [REQ_ZONES, REQ_CREATE_ZONE, REQ_DELETE_ZONE],
-      enumerable: false,
-      writable: false,
+    createHandlerProperties({
+      instance: this,
+      response,
+      tokens: [REQ_ZONES, REQ_CREATE_ZONE, REQ_DELETE_ZONE],
     });
   }
 
