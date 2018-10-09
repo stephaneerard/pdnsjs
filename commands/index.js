@@ -29,13 +29,13 @@ const COMMANDS = Object.assign(Object.create(null), {
    */
   [REQ_DELETE_ZONE]: Object.assign(Object.create(null), { t: REQ_DELETE_ZONE, i: null, z: null }),
   /**
-   * @param {String} t - type of the command {@link REQ_CREATE_ZONE}.
+   * @param {String} t - type of the command {@link REQ_CREATE_HOST}.
    * @param {String} i - server id.
    * @param {String} z - zone id.
    * @param {Object} h - host info.
    */
   [REQ_CREATE_HOST]: Object.assign(Object.create(null), {
-    t: REQ_DELETE_ZONE,
+    t: REQ_CREATE_HOST,
     i: null,
     z: null,
     h: null,

@@ -3,6 +3,7 @@ const {
   REQ_CREATE_ZONE,
   REQ_DELETE_ZONE,
 } = require('../../constants');
+const { MODIFIED_OK } = require('../../constants/codes');
 
 module.exports = class ZonesHandler {
   constructor(response) {
@@ -93,7 +94,7 @@ module.exports = class ZonesHandler {
     const options = Object.create(null);
     const response = await this.g.delete(`/servers/${command.i}/zones/${command.z}`, options);
 
-    this.response({ result: response.statusCode === 204 });
+    this.response({ result: response.statusCode === MODIFIED_OK });
   }
 
   async handle(command) {
