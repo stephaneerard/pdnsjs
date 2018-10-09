@@ -1,6 +1,7 @@
 const { REQ_CREATE_HOST } = require('../../constants');
 const { MODIFIED_OK } = require('../../constants/codes');
 const { createHandlerProperties } = require('../../libs/utils/props');
+const { createOptions } = require('../../libs/utils/options');
 
 module.exports = class RSSetsHandler {
   /**
@@ -24,16 +25,9 @@ module.exports = class RSSetsHandler {
   }
 
   async createHost(command) {
-    const options = Object.assign(
-      Object.create(null),
-      {
-        body: JSON.stringify(command.h),
-        json: false,
-      },
-    );
     const response = await this.g.patch(
       `/servers/${command.i}/zones/${command.z}`,
-      options,
+      createOptions({ value: command.h }),
     );
 
     this.response({ result: response.statusCode === MODIFIED_OK });

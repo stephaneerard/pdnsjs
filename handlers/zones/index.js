@@ -5,6 +5,7 @@ const {
 } = require('../../constants');
 const { MODIFIED_OK } = require('../../constants/codes');
 const { createHandlerProperties } = require('../../libs/utils/props');
+const { createOptions } = require('../../libs/utils/options');
 
 module.exports = class ZonesHandler {
   constructor(response) {
@@ -24,14 +25,10 @@ module.exports = class ZonesHandler {
   }
 
   async createZone(command) {
-    const options = Object.assign(
-      Object.create(null),
-      {
-        body: JSON.stringify(command.z),
-        json: false,
-      },
+    const response = await this.g.post(
+      `/servers/${command.i}/zones`,
+      createOptions({ value: command.z }),
     );
-    const response = await this.g.post(`/servers/${command.i}/zones`, options);
     const {
       api_rectify, // eslint-disable-line camelcase
       dnssec,
