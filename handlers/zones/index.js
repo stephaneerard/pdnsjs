@@ -4,44 +4,23 @@ const {
   REQ_DELETE_ZONE,
 } = require('../../constants');
 const { MODIFIED_OK } = require('../../constants/codes');
+const { BasehandlerClass } = require('../../libs/classes/BaseHandlerClass');
+const { createOptions } = require('../../libs/utils/options');
+const { UnknownCommandError } = require('../../errors/UnknownCommandError');
 
-module.exports = class ZonesHandler {
+module.exports = class ZonesHandler extends BasehandlerClass {
   constructor(response) {
-    Reflect.defineProperty(this, 'response', {
-      value: response,
-      enumerable: false,
-      writable: false,
+    super({
+      response,
+      tokens: [REQ_ZONES, REQ_CREATE_ZONE, REQ_DELETE_ZONE],
     });
-
-    Reflect.defineProperty(this, 'g', {
-      enumerable: false,
-      writable: true,
-    });
-
-    Reflect.defineProperty(this, 'TOKENS', {
-      value: [REQ_ZONES, REQ_CREATE_ZONE, REQ_DELETE_ZONE],
-      enumerable: false,
-      writable: false,
-    });
-  }
-
-  set G(g) {
-    this.g = g;
-  }
-
-  get tokens() {
-    return this.TOKENS;
   }
 
   async createZone(command) {
-    const options = Object.assign(
-      Object.create(null),
-      {
-        body: JSON.stringify(command.z),
-        json: false,
-      },
+    const response = await this.g.post(
+      `/servers/${command.i}/zones`,
+      createOptions({ value: command.z }),
     );
-    const response = await this.g.post(`/servers/${command.i}/zones`, options);
     const {
       api_rectify, // eslint-disable-line camelcase
       dnssec,
@@ -91,8 +70,10 @@ module.exports = class ZonesHandler {
   }
 
   async deleteZone(command) {
-    const options = Object.create(null);
-    const response = await this.g.delete(`/servers/${command.i}/zones/${command.z}`, options);
+    const response = await this.g.delete(
+      `/servers/${command.i}/zones/${command.z}`,
+      Object.create(null),
+    );
 
     this.response({ result: response.statusCode === MODIFIED_OK });
   }
@@ -112,7 +93,7 @@ module.exports = class ZonesHandler {
         break;
       }
       default: {
-        throw new EvalError('unknown command:', JSON.stringify(command));
+        throw new UnknownCommandError(JSON.stringify(command));
       }
     }
   }

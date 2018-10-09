@@ -1,49 +1,21 @@
 const { REQ_CREATE_HOST } = require('../../constants');
 const { MODIFIED_OK } = require('../../constants/codes');
+const { BasehandlerClass } = require('../../libs/classes/BaseHandlerClass');
+const { createOptions } = require('../../libs/utils/options');
+const { UnknownCommandError } = require('../../errors/UnknownCommandError');
 
-module.exports = class RSSetsHandler {
-  /**
-   * Constructor
-   * @param {Function} response - The callback to be called with results.
-   */
+module.exports = class RSSetsHandler extends BasehandlerClass {
   constructor(response) {
-    Reflect.defineProperty(this, 'response', {
-      value: response,
-      enumerable: false,
-      writable: false,
+    super({
+      response,
+      tokens: [REQ_CREATE_HOST],
     });
-
-    Reflect.defineProperty(this, 'g', {
-      enumerable: false,
-      writable: true,
-    });
-
-    Reflect.defineProperty(this, 'TOKENS', {
-      value: [REQ_CREATE_HOST],
-      enumerable: false,
-      writable: false,
-    });
-  }
-
-  set G(g) {
-    this.g = g;
-  }
-
-  get tokens() {
-    return this.TOKENS;
   }
 
   async createHost(command) {
-    const options = Object.assign(
-      Object.create(null),
-      {
-        body: JSON.stringify(command.h),
-        json: false,
-      },
-    );
     const response = await this.g.patch(
       `/servers/${command.i}/zones/${command.z}`,
-      options,
+      createOptions({ value: command.h }),
     );
 
     this.response({ result: response.statusCode === MODIFIED_OK });
@@ -56,7 +28,7 @@ module.exports = class RSSetsHandler {
         break;
       }
       default: {
-        throw new EvalError('unknown command:', JSON.stringify(command));
+        throw new UnknownCommandError(JSON.stringify(command));
       }
     }
   }
