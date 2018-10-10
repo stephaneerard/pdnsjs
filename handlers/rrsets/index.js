@@ -1,4 +1,4 @@
-const { REQ_CREATE_DOMAIN } = require('../../constants');
+const { REQ_CREATE_DOMAIN, REQ_DELETE_DOMAIN } = require('../../constants');
 const { MODIFIED_OK } = require('../../constants/codes');
 const { BasehandlerClass } = require('../../libs/classes/BaseHandlerClass');
 const { createOptions } = require('../../libs/utils/options');
@@ -8,11 +8,11 @@ module.exports = class RSSetsHandler extends BasehandlerClass {
   constructor(response) {
     super({
       response,
-      tokens: [REQ_CREATE_DOMAIN],
+      tokens: [REQ_CREATE_DOMAIN, REQ_DELETE_DOMAIN],
     });
   }
 
-  async createHost(command) {
+  async operateDomain(command) {
     const response = await this.g.patch(
       `/servers/${command.i}/zones/${command.z}`,
       createOptions({ value: command.h }),
@@ -24,7 +24,11 @@ module.exports = class RSSetsHandler extends BasehandlerClass {
   async handle(command) {
     switch (command.t) {
       case REQ_CREATE_DOMAIN: {
-        this.createHost(command);
+        this.operateDomain(command);
+        break;
+      }
+      case REQ_DELETE_DOMAIN: {
+        this.operateDomain(command);
         break;
       }
       default: {

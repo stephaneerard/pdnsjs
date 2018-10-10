@@ -4,6 +4,7 @@ const {
   REQ_CREATE_ZONE,
   REQ_DELETE_ZONE,
   REQ_CREATE_DOMAIN,
+  REQ_DELETE_DOMAIN,
 } = require('../constants');
 
 const COMMANDS = Object.assign(Object.create(null), {
@@ -36,6 +37,18 @@ const COMMANDS = Object.assign(Object.create(null), {
    */
   [REQ_CREATE_DOMAIN]: Object.assign(Object.create(null), {
     t: REQ_CREATE_DOMAIN,
+    i: null,
+    z: null,
+    h: null,
+  }),
+  /**
+   * @param {String} t - type of the command {@link REQ_DELETE_DOMAIN}.
+   * @param {String} i - server id.
+   * @param {String} z - zone id.
+   * @param {Object} h - host info.
+   */
+  [REQ_DELETE_DOMAIN]: Object.assign(Object.create(null), {
+    t: REQ_DELETE_DOMAIN,
     i: null,
     z: null,
     h: null,

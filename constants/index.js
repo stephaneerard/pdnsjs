@@ -15,6 +15,10 @@ module.exports.REQ_CREATE_ZONE = 'REQ:CREATE_ZONE';
  */
 module.exports.REQ_DELETE_ZONE = 'REQ:DELETE_ZONE';
 /**
- * Request for creating a host.
+ * Request for creating a domain.
  */
 module.exports.REQ_CREATE_DOMAIN = 'REQ:CREATE_DOMAIN';
+/**
+ * Request for deleting a domain.
+ */
+module.exports.REQ_DELETE_DOMAIN = 'REQ:DELETE_DOMAIN';

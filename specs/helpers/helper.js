@@ -19,6 +19,7 @@ global.pdnsConfig = Object.assign(Object.create(null), {
 
 global.spyObject = spyObject;
 global.defaultServerId = 'localhost';
+global.defaultZoneId = 'dmx.';
 
 beforeEach(() => {
   global.SPY = sandbox.spy(global.spyObject, 'pdnsCallback');

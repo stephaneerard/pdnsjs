@@ -7,20 +7,22 @@ const {
 const { expect } = require('chai');
 const {
   REQ_CREATE_DOMAIN,
+  REQ_DELETE_DOMAIN,
   REQ_CREATE_ZONE,
   REQ_DELETE_ZONE,
 } = require('../constants');
 const { getCommand } = require('../commands');
 
 describe('PowerDNS', () => {
+  const defaultDomain = `stammgast.${global.defaultZoneId}`;
   const zoneInfo = Object.assign(Object.create(null), {
-    name: 'dmx.',
+    name: global.defaultZoneId,
     kind: 'NATIVE',
     api_rectify: false,
     masters: [],
     nameservers: [
-      'ns1.dmx.',
-      'ns2.dmx.',
+      `ns1.${global.defaultZoneId}`,
+      `ns2.${global.defaultZoneId}`,
     ],
   });
 
@@ -42,7 +44,7 @@ describe('PowerDNS', () => {
     },
   );
 
-  const createHostCommand = Object.assign(
+  const createDomainCommand = Object.assign(
     Object.create(null),
     getCommand(REQ_CREATE_DOMAIN),
     {
@@ -51,7 +53,7 @@ describe('PowerDNS', () => {
       h: {
         rrsets: [
           {
-            name: 'stammgast.dmx.',
+            name: defaultDomain,
             type: 'A',
             ttl: 86400,
             changetype: 'REPLACE',
@@ -67,7 +69,25 @@ describe('PowerDNS', () => {
     },
   );
 
-  it('adds a host to a zone', async () => {
+  const deleteDomainCommand = Object.assign(
+    Object.create(null),
+    getCommand(REQ_DELETE_DOMAIN),
+    {
+      i: global.defaultServerId,
+      z: null,
+      h: {
+        rrsets: [
+          {
+            name: defaultDomain,
+            type: 'A',
+            changetype: 'DELETE',
+          },
+        ],
+      },
+    },
+  );
+
+  it(`creates/deletes "${defaultDomain}" domain in "${global.defaultServerId}/${global.defaultZoneId}"`, async () => {
     const createZone = () => new Promise((resolve) => {
       const onZoneCreatedHandler = (data) => {
         global.spyObject.removeListener('call', onZoneCreatedHandler);
@@ -78,14 +98,24 @@ describe('PowerDNS', () => {
       global.PDNS.request(createZoneCommand);
     });
 
-    const createHost = () => new Promise((resolve) => {
-      const onHostCreatedHandler = (data) => {
-        global.spyObject.removeListener('call', onHostCreatedHandler);
+    const createDomain = () => new Promise((resolve) => {
+      const onDomainCreatedHandler = (data) => {
+        global.spyObject.removeListener('call', onDomainCreatedHandler);
         resolve(data);
       };
 
-      global.spyObject.on('call', onHostCreatedHandler);
-      global.PDNS.request(createHostCommand);
+      global.spyObject.on('call', onDomainCreatedHandler);
+      global.PDNS.request(createDomainCommand);
+    });
+
+    const deleteDomain = () => new Promise((resolve) => {
+      const onDomainDeletedHandler = (data) => {
+        global.spyObject.removeListener('call', onDomainDeletedHandler);
+        resolve(data);
+      };
+
+      global.spyObject.on('call', onDomainDeletedHandler);
+      global.PDNS.request(deleteDomainCommand);
     });
 
     const deleteZone = () => new Promise((resolve) => {
@@ -100,20 +130,26 @@ describe('PowerDNS', () => {
 
     const createZoneResult = await createZone();
 
-    expect(global.SPY.calledOnce).to.be.true;
+    expect(global.SPY.callCount).to.equal(1);
     expect(createZoneResult).to.not.be.empty;
 
     deleteZoneCommand.z = createZoneResult.id;
-    createHostCommand.z = createZoneResult.id;
+    createDomainCommand.z = createZoneResult.id;
+    deleteDomainCommand.z = createZoneResult.id;
 
-    const createHostResult = await createHost();
+    const createDomainResult = await createDomain();
 
-    expect(global.SPY.calledTwice).to.be.true;
-    expect(createHostResult.result).to.be.true;
+    expect(global.SPY.callCount).to.equal(2);
+    expect(createDomainResult.result).to.be.true;
+
+    const deleteDomainResult = await deleteDomain();
+
+    expect(global.SPY.callCount).to.equal(3);
+    expect(deleteDomainResult.result).to.be.true;
 
     const deleteZoneResult = await deleteZone(createZoneResult.id);
 
-    expect(global.SPY.calledThrice).to.be.true;
+    expect(global.SPY.callCount).to.equal(4);
     expect(deleteZoneResult.result).to.be.true;
   });
 });

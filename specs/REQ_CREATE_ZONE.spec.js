@@ -10,13 +10,13 @@ const { getCommand } = require('../commands');
 
 describe('PowerDNS', () => {
   const zoneInfo = Object.assign(Object.create(null), {
-    name: 'dmx.',
+    name: global.defaultZoneId,
     kind: 'NATIVE',
     api_rectify: false,
     masters: [],
     nameservers: [
-      'ns1.dmx.',
-      'ns2.dmx.',
+      `ns1.${global.defaultZoneId}`,
+      `ns2.${global.defaultZoneId}`,
     ],
   });
 
@@ -38,7 +38,7 @@ describe('PowerDNS', () => {
     },
   );
 
-  it(`creates/deletes a zone in "${global.defaultServerId}"`, async () => {
+  it(`creates/deletes "${global.defaultZoneId}" zone in "${global.defaultServerId}" server`, async () => {
     const createZone = () => new Promise((resolve) => {
       const onZoneCreatedHandler = (data) => {
         global.spyObject.removeListener('call', onZoneCreatedHandler);
