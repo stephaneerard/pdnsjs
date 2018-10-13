@@ -7,6 +7,7 @@ const { MODIFIED_OK } = require('../../constants/codes');
 const { BasehandlerClass } = require('../../libs/classes/BaseHandlerClass');
 const { createOptions } = require('../../libs/utils/options');
 const { UnknownCommandError } = require('../../errors/UnknownCommandError');
+const { r } = require('../../libs/utils/result');
 
 module.exports = class ZonesHandler extends BasehandlerClass {
   constructor(response) {
@@ -17,23 +18,27 @@ module.exports = class ZonesHandler extends BasehandlerClass {
   }
 
   async createZone(command) {
-    const response = await this.g.post(
-      `/servers/${command.i}/zones`,
-      createOptions({ value: command.z }),
-    );
-    const {
-      api_rectify, // eslint-disable-line camelcase
-      dnssec,
-      id,
-      kind,
-      masters,
-      name,
-      rrsets,
-      serial,
-    } = JSON.parse(response.body);
+    let result = null;
+    let error = null;
 
-    this.response(
-      Object.assign(
+    try {
+      const response = await this.g.post(
+        `/servers/${command.i}/zones`,
+        createOptions({ value: command.z }),
+      );
+
+      const {
+        api_rectify, // eslint-disable-line camelcase
+        dnssec,
+        id,
+        kind,
+        masters,
+        name,
+        rrsets,
+        serial,
+      } = JSON.parse(response.body);
+
+      result = Object.assign(
         Object.create(null),
         {
           api_rectify, // eslint-disable-line camelcase
@@ -45,37 +50,58 @@ module.exports = class ZonesHandler extends BasehandlerClass {
           rrsets,
           serial,
         },
-      ),
-    );
+      );
+    } catch (e) {
+      error = Object.assign(Object.create(null), e);
+      // eslint-disable-next-line no-console
+      console.log(error, JSON.stringify(command));
+    } finally {
+      this.response(r({ error, result }));
+    }
   }
 
   async requestZones(command) {
-    const response = await this.g.get(`/servers/${command.i.serverId}/zones`);
-    const zones = JSON.parse(response.body);
-    const result = zones.map(
-      ({
-        // eslint-disable-next-line camelcase
-        dnssec, id, kind, last_check, masters, name, serial,
-      }) => Object.freeze(
-        Object.assign(
-          Object.create(null),
-          {
-            dnssec, id, kind, last_check, masters, name, serial,
-          },
-        ),
-      ),
-    );
+    let result = null;
+    let error = null;
 
-    this.response(result);
+    try {
+      const response = await this.g.get(`/servers/${command.i.serverId}/zones`);
+      const zones = JSON.parse(response.body);
+      result = zones.map(
+        ({
+          // eslint-disable-next-line camelcase
+          dnssec, id, kind, last_check, masters, name, serial,
+        }) => Object.freeze(
+          Object.assign(
+            Object.create(null),
+            {
+              dnssec, id, kind, last_check, masters, name, serial,
+            },
+          ),
+        ),
+      );
+    } catch (e) {
+      error = Object.assign(Object.create(null), e);
+    } finally {
+      this.response(r({ error, result }));
+    }
   }
 
   async deleteZone(command) {
-    const response = await this.g.delete(
-      `/servers/${command.i}/zones/${command.z}`,
-      Object.create(null),
-    );
+    let result = null;
+    let error = null;
 
-    this.response({ result: response.statusCode === MODIFIED_OK });
+    try {
+      const response = await this.g.delete(
+        `/servers/${command.i}/zones/${command.z}`,
+        Object.create(null),
+      );
+      result = { result: response.statusCode === MODIFIED_OK };
+    } catch (e) {
+      error = Object.assign(Object.create(null), e);
+    } finally {
+      this.response(r({ error, result }));
+    }
   }
 
   async handle(command) {

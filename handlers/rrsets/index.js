@@ -3,6 +3,7 @@ const { MODIFIED_OK } = require('../../constants/codes');
 const { BasehandlerClass } = require('../../libs/classes/BaseHandlerClass');
 const { createOptions } = require('../../libs/utils/options');
 const { UnknownCommandError } = require('../../errors/UnknownCommandError');
+const { r } = require('../../libs/utils/result');
 
 module.exports = class RSSetsHandler extends BasehandlerClass {
   constructor(response) {
@@ -13,12 +14,21 @@ module.exports = class RSSetsHandler extends BasehandlerClass {
   }
 
   async operateDomain(command) {
-    const response = await this.g.patch(
-      `/servers/${command.i}/zones/${command.z}`,
-      createOptions({ value: command.h }),
-    );
+    let result = null;
+    let error = null;
 
-    this.response({ result: response.statusCode === MODIFIED_OK });
+    try {
+      const response = await this.g.patch(
+        `/servers/${command.i}/zones/${command.z}`,
+        createOptions({ value: command.h }),
+      );
+
+      result = { result: response.statusCode === MODIFIED_OK };
+    } catch (e) {
+      error = Object.assign(Object.create(null), e);
+    } finally {
+      this.response(r({ error, result }));
+    }
   }
 
   async handle(command) {

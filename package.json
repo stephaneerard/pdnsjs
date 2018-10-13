@@ -15,9 +15,10 @@
     "dotenv": "^6.0.0",
     "got": "^9.2.2",
     "lodash": "^4.17.11",
+    "mocha": "^5.2.0",
     "schm": "^0.4.1",
     "sinon": "^6.3.5",
-    "mocha": "^5.2.0"
+    "winston": "^3.1.0"
   },
   "devDependencies": {
     "async": "^2.6.1",
@@ -36,7 +37,7 @@
   "homepage": "https://github.com/Dmitry-N-Medvedev/pdnsjs#readme",
   "scripts": {
     "lint": "./node_modules/.bin/eslint --env node --max-warnings 1 --fix './**/*.js'",
-    "test": "NODE_PATH=./ NODE_DEBUG=PowerDNS cross-env npm run lint && ./node_modules/.bin/mocha --opts ./mocha.opts ./**/*.spec.js",
+    "test": "NODE_PATH=./ cross-env npm run lint && ./node_modules/.bin/mocha --opts ./mocha.opts ./**/*.spec.js",
     "codecov-report": "NODE_PATH=./ ./node_modules/.bin/nyc ./node_modules/.bin/mocha --opts ./mocha.opts ./**/*.spec.js && ./node_modules/.bin/nyc --reporter=lcov --reporter=text-lcov report > ./codecov-report.lcov | ./node_modules/.bin/codecov"
   },
   "keywords": [

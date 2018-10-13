@@ -1,9 +1,9 @@
---globals spyObject,defaultServerId,defaultZoneId,SPY,PDNS
+--globals spyObject,defaultServerId,defaultZoneId,SPY,PDNS,logger
 --colors
 --bail
 --slow 100
 --timeout 500
---check-leaks --globals spyObject,defaultServerId,defaultZoneId,SPY,PDNS
+--check-leaks --globals spyObject,defaultServerId,defaultZoneId,SPY,PDNS,logger
 --inline-diffs
 --exit
 --throw-deprecation

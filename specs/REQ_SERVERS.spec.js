@@ -17,7 +17,13 @@ describe('PowerDNS', () => {
       global.spyObject.removeListener('call', onHandler);
 
       expect(global.SPY.calledOnce).to.be.true;
-      expect(data[0]).to.have.all.keys(expectedKeys);
+      expect(data.e).to.not.exist;
+      expect(Array.isArray(data.r)).to.be.true;
+      expect(data.r).to.not.be.empty;
+
+      data.r.forEach((server) => {
+        expect(server).to.have.all.keys(expectedKeys);
+      });
 
       done();
     };

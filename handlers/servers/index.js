@@ -1,5 +1,6 @@
 const { REQ_SERVERS } = require('../../constants');
 const { BasehandlerClass } = require('../../libs/classes/BaseHandlerClass');
+const { r } = require('../../libs/utils/result');
 
 module.exports = class ServersHandler extends BasehandlerClass {
   constructor(response) {
@@ -10,15 +11,22 @@ module.exports = class ServersHandler extends BasehandlerClass {
   }
 
   async handle() {
-    const response = await this.g.get('/servers');
-    const result = JSON.parse(response.body);
+    let result = null;
+    let error = null;
 
-    // eslint-disable-next-line camelcase
-    const servers = result.map(({ id, daemon_type, version }) => Object.assign(
-      Object.create(null),
-      { id, daemon_type, version },
-    ));
+    try {
+      const response = await this.g.get('/servers');
+      const res = JSON.parse(response.body);
 
-    this.response(servers);
+      // eslint-disable-next-line camelcase
+      result = res.map(({ id, daemon_type, version }) => Object.assign(
+        Object.create(null),
+        { id, daemon_type, version },
+      ));
+    } catch (e) {
+      error = Object.assign(Object.create(null), e);
+    } finally {
+      this.response(r({ error, result }));
+    }
   }
 };

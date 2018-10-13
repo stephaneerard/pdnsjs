@@ -49,13 +49,11 @@ describe('PowerDNS', () => {
       global.PDNS.request(createZoneCommand);
     });
 
-    const deleteZone = zoneId => new Promise((resolve) => {
+    const deleteZone = () => new Promise((resolve) => {
       const onZoneDeletedHandler = (data) => {
         global.spyObject.removeListener('call', onZoneDeletedHandler);
         resolve(data);
       };
-
-      deleteZoneCommand.z = zoneId;
 
       global.spyObject.on('call', onZoneDeletedHandler);
       global.PDNS.request(deleteZoneCommand);
@@ -64,11 +62,15 @@ describe('PowerDNS', () => {
     const createZoneResult = await createZone();
 
     expect(global.SPY.calledOnce).to.be.true;
+    expect(createZoneResult.e).to.not.exist;
     expect(createZoneResult).to.not.be.empty;
 
-    const deleteZoneResult = await deleteZone(createZoneResult.id);
+    deleteZoneCommand.z = createZoneResult.r.id;
+
+    const deleteZoneResult = await deleteZone();
 
     expect(global.SPY.calledTwice).to.be.true;
-    expect(deleteZoneResult.result).to.be.true;
+    expect(deleteZoneResult.e).to.not.exist;
+    expect(deleteZoneResult.r.result).to.be.true;
   });
 });

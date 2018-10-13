@@ -88,7 +88,7 @@ describe('PowerDNS', () => {
   );
 
   it(`creates/deletes "${defaultDomain}" domain in "${global.defaultServerId}/${global.defaultZoneId}"`, async () => {
-    const createZone = () => new Promise((resolve) => {
+    const createZone = () => new Promise(async (resolve) => {
       const onZoneCreatedHandler = (data) => {
         global.spyObject.removeListener('call', onZoneCreatedHandler);
         resolve(data);
@@ -131,25 +131,28 @@ describe('PowerDNS', () => {
     const createZoneResult = await createZone();
 
     expect(global.SPY.callCount).to.equal(1);
-    expect(createZoneResult).to.not.be.empty;
+    expect(createZoneResult.e).to.not.exist;
 
-    deleteZoneCommand.z = createZoneResult.id;
-    createDomainCommand.z = createZoneResult.id;
-    deleteDomainCommand.z = createZoneResult.id;
+    deleteZoneCommand.z = createZoneResult.r.id;
+    createDomainCommand.z = createZoneResult.r.id;
+    deleteDomainCommand.z = createZoneResult.r.id;
 
     const createDomainResult = await createDomain();
 
     expect(global.SPY.callCount).to.equal(2);
-    expect(createDomainResult.result).to.be.true;
+    expect(createDomainResult.e).to.not.exist;
+    expect(createDomainResult.r.result).to.be.true;
 
     const deleteDomainResult = await deleteDomain();
 
     expect(global.SPY.callCount).to.equal(3);
-    expect(deleteDomainResult.result).to.be.true;
+    expect(deleteDomainResult.e).to.not.exist;
+    expect(deleteDomainResult.r.result).to.be.true;
 
     const deleteZoneResult = await deleteZone(createZoneResult.id);
 
     expect(global.SPY.callCount).to.equal(4);
-    expect(deleteZoneResult.result).to.be.true;
+    expect(deleteZoneResult.e).to.not.exist;
+    expect(deleteZoneResult.r.result).to.be.true;
   });
 });

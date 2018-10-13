@@ -2,13 +2,14 @@ const { resolve } = require('path');
 const { readdirSync } = require('fs');
 const got = require('got');
 const { url } = require('./libs/utils/serverurl');
-
+const { userAgent } = require('./libs/utils/user-agent');
 
 class PowerDNS {
   constructor(callback) {
     this.response = callback;
     this.handlerResolverTable = new Map();
     this.handlers = [];
+    this.userAgent = userAgent();
   }
 
   configure(config) {
@@ -23,6 +24,22 @@ class PowerDNS {
         proto, host, port, basePath,
       }),
       headers,
+      timeout: this.config.timeout,
+      retry: {
+        retries: this.config.retries,
+      },
+      hooks: {
+        beforeRequest: [
+          async (options) => {
+            // eslint-disable-next-line no-param-reassign
+            options.headers['user-agent'] = this.userAgent;
+            // eslint-disable-next-line no-param-reassign
+            options.headers['Cache-Control'] = 'no-store';
+            // eslint-disable-next-line no-param-reassign
+            // options.path = `${options.path}?n:${Date.now()}`;
+          },
+        ],
+      },
     });
 
     const handlersPath = resolve('./handlers');

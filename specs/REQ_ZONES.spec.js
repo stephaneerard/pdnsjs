@@ -21,7 +21,8 @@ describe('PowerDNS', () => {
       global.spyObject.removeListener('call', onHandler);
 
       expect(global.SPY.calledOnce).to.be.true;
-      expect(Array.isArray(data)).to.be.true;
+      expect(data.e).to.not.exist;
+      expect(Array.isArray(data.r)).to.be.true;
 
       done();
     };
