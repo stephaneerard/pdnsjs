@@ -1,6 +1,6 @@
 {
   "name": "@webqualitech/pdnsjs",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "powerDNS API",
   "main": "pdns.js",
   "repository": {
